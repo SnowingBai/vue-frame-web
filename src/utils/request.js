@@ -22,19 +22,21 @@ service.interceptors.request.use(
 
 service.interceptors.response.use(
   response => {
-    const res = response.data
+    const { status, message, data } = response
 
-    if (res.code === 200) return res
-
-    if (res.code === 401 || res.code === 601) reLogin()
+    if (status === 200) return data
     else {
-      Message.error({ message: res.message || 'Error' })
-      return Promise.reject(new Error(res.message || 'Error'))
+      Message.error({ message: message || 'Error' })
+      return Promise.reject(new Error(message || 'Error'))
     }
   },
   error => {
-    Message.error({ message: error.message })
-    return Promise.reject(error)
+    const status = error.response.data.status
+    if (status === 401 || status === 601) reLogin()
+    else {
+      Message.error({ message: error.message })
+      return Promise.reject(error)
+    }
   }
 )
 

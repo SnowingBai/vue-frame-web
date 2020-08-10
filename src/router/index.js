@@ -9,28 +9,15 @@ import Layout from '@/layout'
 /* Router Modules */
 import certification from './modules/certification'
 import settlement from './modules/settlement'
+
 export const asyncRoutes = [
   certification,
   settlement,
-  // 404
+  // no match 404
   { path: '*', redirect: '/404', hidden: true }
 ]
 
-const routes = [
-  // {
-  //   path: '/',
-  //   name: 'Home',
-  //   component: Home
-  // },
-  // {
-  //   path: '/about',
-  //   name: 'About',
-  //   // route level code-splitting
-  //   // this generates a separate chunk (about.[hash].js) for this route
-  //   // which is lazy-loaded when the route is visited.
-  //   component: () =>
-  //     import(/* webpackChunkName: "about" */ '../views/About.vue')
-  // },
+export const constantRoutes = [
   {
     path: '/',
     component: Layout,
@@ -70,7 +57,8 @@ const routes = [
 const router = new VueRouter({
   mode: 'history',
   base: process.env.BASE_URL,
-  routes
+  scrollBehavior: () => ({ y: 0 }),
+  routes: constantRoutes
 })
 
 export default router

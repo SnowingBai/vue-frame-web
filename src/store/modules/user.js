@@ -5,7 +5,8 @@
  * @desc 用户数据
  */
 
-import { login, logout, getUserInfo } from '@/api/user'
+import { login, logout } from '@/api/login'
+import { getUserInfo } from '@/api/user'
 import { getToken, setToken, removeToken } from '@/utils/auth'
 
 export default {
@@ -37,9 +38,9 @@ export default {
           })
       })
     },
-    logout({ commit, state }) {
+    logout({ commit }) {
       return new Promise((resolve, reject) => {
-        logout(state.token)
+        logout()
           .then(() => {
             commit('SET_TOKEN', '')
             removeToken()

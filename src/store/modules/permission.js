@@ -5,31 +5,51 @@
  * @desc 路由访问权限配置
  */
 
-import { getMenus } from '@/api/app'
+import { constantRoutes } from '@/router'
+
+/* Layout */
+import Layout from '@/layout'
 
 export default {
   namespaced: true,
   state: {
-    menus: []
+    routes: [],
+    addRoutes: []
   },
   mutations: {
-    SET_MENUS(state, menus) {
-      state.menus = menus
+    SET_ROUTES(state, routes) {
+      state.addRoutes = routes
+      state.routes = constantRoutes.concat(routes)
     }
   },
   actions: {
-    getPermissionMenus({ commit }) {
-      return new Promise((resolve, reject) => {
-        getMenus()
-          .then(res => {
-            const { data } = res
-            commit('SET_MENUS', data)
-            resolve(data)
-          })
-          .catch(err => {
-            reject(err)
-          })
-      })
+    generateRoutes({ commit }, asyncRoutes) {
+      commit('SET_ROUTES', asyncRoutes)
     }
   }
+}
+
+// 遍历api返回的路由，转为组件对象
+export const filterAsyncRoutes = routes => {
+  return routes.filter(route => {
+    if (route.component) {
+      if (route.component === 'Layout') {
+        route.component = Layout
+      } else {
+        const component = route.component
+        route.component = loadView(component)
+      }
+    }
+
+    if (route.children && route.children.length) {
+      route.children = filterAsyncRoutes(route.children)
+    }
+
+    return true
+  })
+}
+
+// 路由懒加载
+export const loadView = view => {
+  return resolve => require([`@/views/${view}`], resolve)
 }

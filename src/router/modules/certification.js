@@ -20,6 +20,9 @@ export default {
   children: [
     {
       path: '/agency',
+      // route level code-splitting
+      // this generates a separate chunk (certification.[hash].js) for this route
+      // which is lazy-loaded when the route is visited.
       component: () =>
         import(
           /* webpackChunkName: "certification" */ '@/views/certification/agency.vue'
